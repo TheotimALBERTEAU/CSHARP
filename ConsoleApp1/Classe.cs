@@ -5,9 +5,9 @@ public class Classe
     private List<Profil> students;
     private string className;
     private string school;
-    private int level;
+    private string level;
 
-    public Classe(List<Profil> students, string className, string school, int level)
+    public Classe(List<Profil> students, string className, string school, string level)
     {
         this.students = students;
         this.className = className;
@@ -15,10 +15,10 @@ public class Classe
         this.level = level;
     }
 
-    public int Level
+    public string Level
     {
         get => level;
-        set => level = value;
+        set => level = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public string School

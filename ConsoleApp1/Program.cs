@@ -19,10 +19,13 @@ internal abstract class Program
             // Création du dictionnaire qui contiendra toutes les personnes
             var profiles = new Dictionary<int, Profil>();
 
+            // boucle pour passer par toutes les lignes du data
             while (data.ReadLine() is { } line)
             {
+                // split des valeurs pour accéder à chacune d'entre elles
                 var values = line.Split(',');
-
+                
+                // création d'une instance de Profil
                 var person = new Profil
                 {
                     Nom = values[1],
@@ -31,9 +34,11 @@ internal abstract class Program
                     Taille = int.Parse(values[5]),
                 };
 
+                // split l'adresse pour accéder aux différentes valeurs de celle-ci
                 var details = values[4].Split(';');
                 person.Address = new Detail(details[0], int.Parse(details[1].Trim()), details[2]);
 
+                // ajout de la person au dictionnaire des profils
                 profiles.Add(int.Parse(values[0]), person);
             }
             
@@ -41,17 +46,17 @@ internal abstract class Program
             
             #region Write Values
             
-            /* foreach (var i in profiles.Keys)
-            {
-                Console.WriteLine($"Bonjour {profiles[i].Prenom} {profiles[i].Nom},");
-                Console.WriteLine(
-                    $"tu as {profiles[i].YearsOld().ToString()} ans et tu habites au {profiles[i].Address.Rue} {profiles[i].Address.Codepostal} {profiles[i].Address.Ville}.\n");
-            } */
+            // Afficher la phrase de présentation de chaque personne
+            /* profiles.Select(personne => $"Bonjour {personne.Value.Prenom} {personne.Value.Nom},\n" +
+                                        $"tu as {personne.Value.YearsOld().ToString()} ans et tu habites au {personne.Value.Address.Rue} {personne.Value.Address.Codepostal} {personne.Value.Address.Ville}.\n")
+                .ToList()
+                .ForEach(Console.WriteLine); */
             
             #endregion
             
             #region Moyenne + Tall Persons
             
+            // Création de la moyenne de taille de la classe + Liste des grandes personnes
             float moyenne = (float)profiles.Values.Average(p => p.Taille);
             List<Profil> compteurGrandesPersonnes = profiles.Values.Where(personne => personne.Taille > moyenne).ToList();
             // Console.WriteLine($"Il y a {compteurGrandesPersonnes.Count} personnes qui sont plus grandes que la moyenne {moyenne/100:F2} mètre");
@@ -60,7 +65,8 @@ internal abstract class Program
             
             #region Création classe B2
             
-            Classe B2 = new Classe(profiles.Values.ToList(), "Les goats", "Sup de Vinci", 2);
+            // Instanciation de la classe B2 + afficher une petite présentation
+            Classe B2 = new Classe(profiles.Values.ToList(), "Les goats", "Sup de Vinci", "Bachelor 2");
             Console.WriteLine($"Il y a {B2.Students.Count} élèves dans la classe de niveau {B2.Level} ({B2.ClassName}), de l'école : {B2.School}\n");
             
             #endregion
