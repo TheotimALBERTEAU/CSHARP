@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WhZH7AHS39M=",
+  "dgSpecHash": "HOkwRC0MeBM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Théotim\\RiderProjects\\ConsoleApp1\\ConsoleApp1\\ConsoleApp1.csproj",
+  "projectFilePath": "C:\\Users\\Théotim\\RiderProjects\\CSHARP\\ConsoleApp1\\ConsoleApp1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Théotim\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.1\\microsoft.entityframeworkcore.9.0.1.nupkg.sha512",
     "C:\\Users\\Théotim\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.1\\microsoft.entityframeworkcore.abstractions.9.0.1.nupkg.sha512",

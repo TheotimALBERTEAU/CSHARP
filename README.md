@@ -1,3 +1,3 @@
 # TP Théotim ALBERTEAU
 
-Voici mon TP terminé, commenté et optimisé
+Pour voir le TP (Exercice 4) fait par moi, aller dans le commit "End TP"
