@@ -1,23 +1,34 @@
 ﻿namespace ConsoleApp1;
-
 public class Detail
 {
-    private string rue1;
+    private String street;
 
-    public Detail(string rue1, int code, string ville)
+    private int zipCode;
+    
+    private String city;
+
+    public Detail(string street, int zipCode, string city)
     {
-        this.rue1 = rue1;
-        this.Codepostal = code;
-        this.Ville = ville;
+        this.street = street;
+        this.zipCode = zipCode;
+        this.city = city;
+    }
+    
+    public string Street
+    {
+        get => street;
+        set => street = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public string Rue
+    public int ZipCode
     {
-        get => rue1;
-        set => rue1 = value ?? throw new ArgumentNullException(nameof(value));
+        get => zipCode;
+        set => zipCode = value;
     }
 
-    public int Codepostal { get; set; }
-
-    public string Ville { get; set; }
+    public string City
+    {
+        get => city;
+        set => city = value ?? throw new ArgumentNullException(nameof(value));
+    }
 }

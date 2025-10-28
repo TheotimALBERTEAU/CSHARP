@@ -2,17 +2,15 @@
 
 public class Classe
 {
-    private List<Profil> students;
-    private string className;
-    private string school;
+    private string name;
     private string level;
+    private string school;
+    private List<Profil> persons;
 
-    public Classe(List<Profil> students, string className, string school, string level)
+    public string Name
     {
-        this.students = students;
-        this.className = className;
-        this.school = school;
-        this.level = level;
+        get => name;
+        set => name = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     public string Level
@@ -27,15 +25,9 @@ public class Classe
         set => school = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public string ClassName
+    public List<Profil> Profils
     {
-        get => className;
-        set => className = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public List<Profil> Students
-    {
-        get => students;
-        set => students = value ?? throw new ArgumentNullException(nameof(value));
+        get => Profils;
+        set => Profils = value ?? throw new ArgumentNullException(nameof(value));
     }
 }

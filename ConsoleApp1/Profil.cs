@@ -1,42 +1,58 @@
-﻿namespace ConsoleApp1;
+﻿using ConsoleApp1;
 
 public class Profil
 {
-    private Detail address;
-    private DateTime today = DateTime.Now;
+    private String firstname;
 
-    public string Nom { get; set; }
+    private String lastname;
+    
+    private DateTime birthdate;
+    
+    private Detail adressDetails;
+    
+    private int size;
 
-    public string Prenom { get; set; }
-
-    public string Datenaissance { get; set; }
-
-    public Detail Address
+    public Detail AdressDetails
     {
-        get => address;
-        set => address = value ?? throw new ArgumentNullException(nameof(value));
+        get => adressDetails;
+        set => adressDetails = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public DateTime Today
+    public string Firstname
     {
-        get => today;
-        set => today = value;
+        get => firstname;
+        set => firstname = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public DateTime Date()
+    public string Lastname
     {
-        var date = DateTime.ParseExact(Datenaissance, "dd/MM/yyyy", null);
-        return date;
+        get => lastname;
+        set => lastname = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public int YearsOld()
+    public DateTime Birthdate
     {
-        var date = DateTime.ParseExact(Datenaissance, "dd/MM/yyyy", null);
-        if (today.Month < date.Month) return today.Year - date.Year - 1;
-        if (today.Month == date.Month && today.Day < date.Day) return today.Year - date.Year - 1;
-
-        return today.Year - date.Year;
+        get => birthdate;
+        set => birthdate = value;
+    }
+    
+    public int Size
+    {
+        get => size;
+        set => size = value;
     }
 
-    public int Taille { get; set; }
+    public int getYearsOld()
+    {
+        DateTime today = DateTime.Today;
+
+        int years = today.Year - birthdate.Year;
+
+        if (today.Month < birthdate.Month || today.Month == birthdate.Month && today.Day < birthdate.Day)
+        {
+            years--;
+        }
+        
+        return years;
+    }
 }
