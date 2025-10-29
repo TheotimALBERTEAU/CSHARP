@@ -10,11 +10,16 @@ using Npgsql;
 
 // Charger la configuration manuellement
 var configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\ConsoleApp1\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
+    //.SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\CSHARP\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
     .Build();
 
 var host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration(builder =>
+    {
+        builder.Sources.Clear();
+        builder.AddConfiguration(configuration);
+    })
     .ConfigureServices(services =>
     {
         // NpgsqlConnection singleton avec ouverture automatique
@@ -28,44 +33,28 @@ var host = Host.CreateDefaultBuilder(args)
 
         // On enregistre notre service applicatif
         services.AddTransient<DbConnection>();
+        
+        // On enregistre du service SCV
+        services.AddTransient<csvService>();
     })
     .Build();
 
 using var scope = host.Services.CreateScope();
 DbConnection dbConnectionService = scope.ServiceProvider.GetRequiredService<DbConnection>();
 
+csvService csvRead = scope.ServiceProvider.GetRequiredService<csvService>();
+
 #endregion
 
-String path = configuration.GetRequiredSection("CSVFiles")["ConsoleApp1"];
-
-List<Profil> persons = new List<Profil>(); 
-
-var lignes = File.ReadAllLines(path);
-
-for (int i = 1; i < lignes.Length; i++)
-{
-    String line = lignes[i];
-    Profil person = new Profil();
-    
-    person.Lastname = line.Split(',')[1];
-    person.Firstname = line.Split(',')[2];
-    person.Birthdate = DateTimeUtils.ConvertToDateTime(line.Split(',')[3]);
-    person.Size = Int32.Parse(line.Split(',')[5]);
-    
-    List<String> details = line.Split(',')[4].Split(';').ToList();
-    
-    person.AdressDetails = new Detail(details[0], int.Parse(details[1]), details[2]);
-    
-    persons.Add(person);
-}
+List<Profil> persons = csvRead.ReadAllProfils();
 
 Classe maClasse = new Classe();
 maClasse.Level = "B2";
 maClasse.Name = "B2 C#";
 maClasse.School = "SupDeVinci";
-maClasse.Profils = persons.ToList();
+maClasse.Persons = persons.ToList();
 
-await dbConnectionService.init(maClasse);
+// await dbConnectionService.init(maClasse);
 
 #region renseigne à la main
 
@@ -101,19 +90,19 @@ await dbConnectionService.init(maClasse);
     #endregion
 
 #region exercice taille et linq
-// double tailleMoyenne = persons.Average(person => person.Value.Size);
+// double tailleMoyenne = Persons.Average(person => person.Value.Size);
 // double tailleMoyenneMetre = Math.Floor(tailleMoyenne) / 100;
 //
-// Dictionary<int, Profil> tallerProfils = persons.Where(person => person.Value.Size > tailleMoyenne)
+// Dictionary<int, Profil> tallerPersons = Persons.Where(person => person.Value.Size > tailleMoyenne)
 //     .ToDictionary(person => person.Key, person => person.Value);
 //
-// Console.WriteLine($"Il y a {tallerProfils.Count.ToString()} personnes qui sont plus grandes que la moyenne " +
+// Console.WriteLine($"Il y a {tallerPersons.Count.ToString()} personnes qui sont plus grandes que la moyenne " +
 //                   $"de la classe qui est de {tailleMoyenneMetre} mètre");
 #endregion
 
 #region boucle affiche toute la classe
 
-// foreach (KeyValuePair<int, Profil> person in persons)
+// foreach (KeyValuePair<int, Profil> person in Persons)
 // {
 // Console.WriteLine($"Bonjour {person.Value.Firstname} {person.Value.Lastname},");
 // Console.WriteLine($"tu as {person.Value.getYearsOld().ToString()} ans et tu habites au {person.Value.AdressDetails.Street}" +

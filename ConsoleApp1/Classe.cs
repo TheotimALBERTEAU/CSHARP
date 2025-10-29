@@ -25,9 +25,9 @@ public class Classe
         set => school = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    public List<Profil> Profils
+    public List<Profil> Persons
     {
-        get => Profils;
-        set => Profils = value ?? throw new ArgumentNullException(nameof(value));
+        get => persons;
+        set => persons = value ?? throw new ArgumentNullException(nameof(value));
     }
 }
