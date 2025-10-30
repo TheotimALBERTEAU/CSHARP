@@ -1,18 +1,72 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ConsoleApp1;
+using ConsoleApp1.Model;
 
 public class Profil
 {
-    [Key] public Guid Id { get; set; } = Guid.NewGuid();
+    [Key]
+    public Guid Id {get;set;} = new Guid();
+    
+    [Required]
+    private String firstname;
 
-    [Required] public string Firstname { get; set; }
-    public string Lastname { get; set; }
-    public DateTime Birthdate { get; set; }
-    public int Size { get; set; }
-    public ICollection<Detail> AddressDetails { get; set; } = new List<Detail>();
+    [Required]
+    private String lastname;
+    
+    [Required]
+    private DateTime birthdate;
+    
+    [Required]
+    //relation n..n vers Detail
+    public ICollection<Detail> Details { get; set; } = new List<Detail>();
+    
+    [Required]
+    private int size;
 
-    [ForeignKey("Classe")] public Guid ClassId { get; set; }
+    [ForeignKey("profil_classe_fk")]
+    public Guid IdClasse {get; set;}
+    
+    public Classe Classe {get; set;}
 
-    public Classe Classe { get; set; }
+    #region Accesseur
+
+    public string Firstname
+    {
+        get => firstname;
+        set => firstname = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
+    public string Lastname
+    {
+        get => lastname;
+        set => lastname = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
+    public DateTime Birthdate
+    {
+        get => birthdate;
+        set => birthdate = value;
+    }
+    
+    public int Size
+    {
+        get => size;
+        set => size = value;
+    }
+
+    #endregion
+
+    public int getYearsOld()
+    {
+        DateTime today = DateTime.Today;
+
+        int years = today.Year - birthdate.Year;
+
+        if (today.Month < birthdate.Month || today.Month == birthdate.Month && today.Day < birthdate.Day)
+        {
+            years--;
+        }
+        
+        return years;
+    }
 }

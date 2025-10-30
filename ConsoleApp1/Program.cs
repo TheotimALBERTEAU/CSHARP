@@ -1,46 +1,65 @@
-﻿using ConsoleApp1;
+﻿// See https://aka.ms/new-console-template for more information
+
+using ConsoleApp1;
 using ConsoleApp1.Data;
+using ConsoleApp1.Data.InterfaceRepository;
+using ConsoleApp1.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Microsoft.EntityFrameworkCore.Design;
 
 #region lancement services
 
+// Charger la configuration manuellement
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\CSHARP\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
+
 var host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(builder =>
-    {
-        builder.Sources.Clear();
-        builder.AddConfiguration(dbContext.configuration);
-    })
     .ConfigureServices(services =>
     {
-        // NpgsqlConnection singleton avec ouverture automatique
-        services.AddSingleton(provider =>
-        {
-            var conn = new NpgsqlConnection(
-                configuration.GetConnectionString("DefaultConnection"));
-            conn.Open(); // ouverture unique
-            return conn;
-        });
+        services.AddDbContext<SchoolDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         // On enregistre notre service applicatif
         services.AddTransient<DbConnection>();
         
-        // On enregistre du service SCV
-        services.AddTransient<csvService>();
+        services.AddTransient<IPersonRepository, PersonRepository>();
     })
     .Build();
 
 using var scope = host.Services.CreateScope();
-DbConnection dbConnectionService = scope.ServiceProvider.GetRequiredService<DbConnection>();
-
-csvService csvRead = scope.ServiceProvider.GetRequiredService<csvService>();
+IPersonRepository personRepository = scope.ServiceProvider.GetRequiredService<IPersonRepository>();
 
 #endregion
 
-List<Profil> persons = csvRead.ReadAllProfils();
+#region  CSV
+
+String path = configuration.GetRequiredSection("CSVFiles")["CoursSupDeVinci"];
+
+List<Profil> persons = new List<Profil>(); 
+
+var lignes = File.ReadAllLines(path);
+
+for (int i = 1; i < lignes.Length; i++)
+{
+    String line = lignes[i];
+    Profil person = new Profil();
+    
+    person.Lastname = line.Split(',')[1];
+    person.Firstname = line.Split(',')[2];
+    person.Birthdate = DateTimeUtils.ConvertToDateTime(line.Split(',')[3]);
+    person.Size = Int32.Parse(line.Split(',')[5]);
+    
+    List<String> details = line.Split(',')[4].Split(';').ToList();
+    
+    person.Details.Add(new Detail(details[0], int.Parse(details[1]), details[2]));
+    
+    persons.Add(person);
+}
 
 Classe maClasse = new Classe();
 maClasse.Level = "B2";
@@ -48,12 +67,21 @@ maClasse.Name = "B2 C#";
 maClasse.School = "SupDeVinci";
 maClasse.Persons = persons.ToList();
 
-// await dbConnectionService.init(maClasse);
+#endregion
+
+//dbConnectionService.SaveFullClasse(maClasse);
+List<Profil> personsDb = personRepository.GetAllEthan();
+
+foreach (var person in personsDb)
+{
+    Console.WriteLine("Il y a " + personsDb.Count + " personnes qui s'appelles "+person.Firstname + " et habite à "
+                      + person.Details.First().City);
+}
 
 #region renseigne à la main
 
-// Profil person1 = new Profil();
-// Profil person2 = new Profil();
+// Person person1 = new Person();
+// Person person2 = new Person();
 //
 // Console.WriteLine("Quelle est le nom de P1 ?");
 // person1.Lastname = Console.ReadLine();
@@ -84,10 +112,10 @@ maClasse.Persons = persons.ToList();
     #endregion
 
 #region exercice taille et linq
-// double tailleMoyenne = Persons.Average(person => person.Value.Size);
+// double tailleMoyenne = persons.Average(person => person.Value.Size);
 // double tailleMoyenneMetre = Math.Floor(tailleMoyenne) / 100;
 //
-// Dictionary<int, Profil> tallerPersons = Persons.Where(person => person.Value.Size > tailleMoyenne)
+// Dictionary<int, Person> tallerPersons = persons.Where(person => person.Value.Size > tailleMoyenne)
 //     .ToDictionary(person => person.Key, person => person.Value);
 //
 // Console.WriteLine($"Il y a {tallerPersons.Count.ToString()} personnes qui sont plus grandes que la moyenne " +
@@ -96,7 +124,7 @@ maClasse.Persons = persons.ToList();
 
 #region boucle affiche toute la classe
 
-// foreach (KeyValuePair<int, Profil> person in Persons)
+// foreach (KeyValuePair<int, Person> person in persons)
 // {
 // Console.WriteLine($"Bonjour {person.Value.Firstname} {person.Value.Lastname},");
 // Console.WriteLine($"tu as {person.Value.getYearsOld().ToString()} ans et tu habites au {person.Value.AdressDetails.Street}" +

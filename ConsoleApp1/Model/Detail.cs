@@ -1,15 +1,44 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ConsoleApp1.Model;
 
 public class Detail
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = new Guid();
+    
+    private String street;
+
+    private int zipCode;
+    
+    private String city;
     
     [Required]
-    public String Street { get; set; }
-    public int zipCode { get; set; }
-    public String City { get; set; }
-    
+    //relation n..n vers Detail
     public ICollection<Profil> Persons { get; set; } = new List<Profil>();
+
+    public Detail(string street, int zipCode, string city)
+    {
+        this.street = street;
+        this.zipCode = zipCode;
+        this.city = city;
+    }
+    
+    public string Street
+    {
+        get => street;
+        set => street = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
+    public int ZipCode
+    {
+        get => zipCode;
+        set => zipCode = value;
+    }
+
+    public string City
+    {
+        get => city;
+        set => city = value ?? throw new ArgumentNullException(nameof(value));
+    }
 }
