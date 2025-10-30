@@ -9,7 +9,7 @@ using Npgsql;
 // Charger la configuration manuellement
 var configuration = new ConfigurationBuilder()
     //.SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\CSHARP\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\ConsoleApp1\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
     .Build();
 
 var host = Host.CreateDefaultBuilder(args)
