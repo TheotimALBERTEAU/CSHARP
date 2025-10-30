@@ -31,7 +31,14 @@ public class csvService
 
             List<String> details = line.Split(',')[4].Split(';').ToList();
 
-            person.AdressDetails = new Detail(details[0], int.Parse(details[1]), details[2]);
+            person.AddressDetails = new Detail
+                {
+                    Street = details[0],
+                    zipCode = int.Parse(details[1]),
+                    City = details[2]
+                }
+
+        ;
 
             Persons.Add(person);
         }

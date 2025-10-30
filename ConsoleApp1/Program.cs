@@ -1,22 +1,18 @@
 ﻿using ConsoleApp1;
+using ConsoleApp1.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using Microsoft.EntityFrameworkCore.Design;
 
 #region lancement services
-
-// Charger la configuration manuellement
-var configuration = new ConfigurationBuilder()
-    //.SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\ConsoleApp1\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
-    .Build();
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(builder =>
     {
         builder.Sources.Clear();
-        builder.AddConfiguration(configuration);
+        builder.AddConfiguration(dbContext.configuration);
     })
     .ConfigureServices(services =>
     {

@@ -1,58 +1,18 @@
-﻿using ConsoleApp1;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ConsoleApp1;
 
 public class Profil
 {
-    private String firstname;
+    [Key] public Guid Id { get; set; } = Guid.NewGuid();
 
-    private String lastname;
-    
-    private DateTime birthdate;
-    
-    private Detail adressDetails;
-    
-    private int size;
+    [Required] public string Firstname { get; set; }
+    public string Lastname { get; set; }
+    public DateTime Birthdate { get; set; }
+    public int Size { get; set; }
+    public ICollection<Detail> AddressDetails { get; set; } = new List<Detail>();
 
-    public Detail AdressDetails
-    {
-        get => adressDetails;
-        set => adressDetails = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    [ForeignKey("Classe")] public Guid ClassId { get; set; }
 
-    public string Firstname
-    {
-        get => firstname;
-        set => firstname = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public string Lastname
-    {
-        get => lastname;
-        set => lastname = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public DateTime Birthdate
-    {
-        get => birthdate;
-        set => birthdate = value;
-    }
-    
-    public int Size
-    {
-        get => size;
-        set => size = value;
-    }
-
-    public int getYearsOld()
-    {
-        DateTime today = DateTime.Today;
-
-        int years = today.Year - birthdate.Year;
-
-        if (today.Month < birthdate.Month || today.Month == birthdate.Month && today.Day < birthdate.Day)
-        {
-            years--;
-        }
-        
-        return years;
-    }
+    public Classe Classe { get; set; }
 }

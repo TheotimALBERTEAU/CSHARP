@@ -1,15 +1,19 @@
-﻿using Npgsql;
+﻿using ConsoleApp1.Data;
+using Npgsql;
 
 namespace ConsoleApp1;
 
 public class DbConnection
 {
+    #region Old Insertions
+
+    /*
     private readonly NpgsqlConnection _connection;
     public DbConnection(NpgsqlConnection connection)
     {
         _connection = connection;
     }
-    
+
     public async Task init(Classe maClasse)
     {
          // Commence une transaction pour tout insérer ensemble
@@ -21,11 +25,11 @@ public class DbConnection
         insertClasseCmd.Parameters.AddWithValue("name", maClasse.Name);
         insertClasseCmd.Parameters.AddWithValue("level", maClasse.Level);
         insertClasseCmd.Parameters.AddWithValue("school", maClasse.School);
-        
+
         Guid classeId = (Guid)await insertClasseCmd.ExecuteScalarAsync();
 
         // --- Insert Persons ---
-        
+
         foreach (var person in maClasse.Persons)
         {
             var insertPersonCmd = new NpgsqlCommand(
@@ -35,16 +39,16 @@ public class DbConnection
             insertPersonCmd.Parameters.AddWithValue("birthdate", person.Birthdate);
             insertPersonCmd.Parameters.AddWithValue("size", person.Size);
             insertPersonCmd.Parameters.AddWithValue("idclasse", classeId);
-            
+
             Guid personId = (Guid)await insertPersonCmd.ExecuteScalarAsync();
 
             // --- Insert Details ---
                 var insertDetailCmd = new NpgsqlCommand(
                     "INSERT INTO details(street, city, zipcode) VALUES (@street, @city, @zipCode) RETURNING id", _connection, transaction);
-                insertDetailCmd.Parameters.AddWithValue("street", person.AdressDetails.Street);
-                insertDetailCmd.Parameters.AddWithValue("city", person.AdressDetails.City);
-                insertDetailCmd.Parameters.AddWithValue("zipCode", person.AdressDetails.ZipCode);
-                
+                insertDetailCmd.Parameters.AddWithValue("street", person.AddressDetails.Street);
+                insertDetailCmd.Parameters.AddWithValue("city", person.AddressDetails.City);
+                insertDetailCmd.Parameters.AddWithValue("zipCode", person.AddressDetails.zipCode);
+
                 Guid detailId = (Guid)await insertDetailCmd.ExecuteScalarAsync();
 
                 var insertPersonDetailCmd = new NpgsqlCommand(
@@ -52,13 +56,28 @@ public class DbConnection
                 insertPersonDetailCmd.Parameters.AddWithValue("idPerson", personId);
                 insertPersonDetailCmd.Parameters.AddWithValue("idDetail", detailId);
                 await insertPersonDetailCmd.ExecuteNonQueryAsync();
-                
+
         }
 
         // Commit
         await transaction.CommitAsync();
 
         Console.WriteLine("Insertion hiérarchique réussie");
+    }
+    */
+    
+    #endregion
+    
+    private readonly SchoolDbContext _schoolDbContext;
+    public DbConnection(SchoolDbContext schoolDbContext)
+    {
+        _schoolDbContext = schoolDbContext;
+    }
+
+    public void SaveFullClasse(Classe maClasse)
+    {
+        _schoolDbContext.Add(maClasse);
+        _schoolDbContext.SaveChanges();
     }
 
 }

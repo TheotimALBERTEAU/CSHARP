@@ -1,34 +1,15 @@
-﻿namespace ConsoleApp1;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 public class Detail
 {
-    private String street;
-
-    private int zipCode;
+    [Key]
+    public Guid Id { get; set; }
     
-    private String city;
-
-    public Detail(string street, int zipCode, string city)
-    {
-        this.street = street;
-        this.zipCode = zipCode;
-        this.city = city;
-    }
+    [Required]
+    public String Street { get; set; }
+    public int zipCode { get; set; }
+    public String City { get; set; }
     
-    public string Street
-    {
-        get => street;
-        set => street = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public int ZipCode
-    {
-        get => zipCode;
-        set => zipCode = value;
-    }
-
-    public string City
-    {
-        get => city;
-        set => city = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public ICollection<Profil> Persons { get; set; } = new List<Profil>();
 }
