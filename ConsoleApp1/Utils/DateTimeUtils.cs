@@ -1,4 +1,4 @@
-﻿namespace ConsoleApp1;
+﻿namespace ConsoleApp1.Utils;
 
 public class DateTimeUtils
 {
@@ -6,7 +6,7 @@ public class DateTimeUtils
     {
         if (DateTime.TryParse(date, out DateTime birthdate))
         {
-            return  birthdate;
+            return DateTime.SpecifyKind(birthdate, DateTimeKind.Utc);
         }
         else
         {

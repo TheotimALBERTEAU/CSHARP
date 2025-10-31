@@ -37,7 +37,7 @@ public class SchoolDbContext : DbContext
         // Charger la configuration manuellement
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(@"C:\\Users\\julie\\RiderProjects\\CoursSupDeVinci\\CoursSupDeVinci\\appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile(@"C:\Users\Théotim\RiderProjects\ConsoleApp1\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
             .Build();
         
         if (!optionsBuilder.IsConfigured)

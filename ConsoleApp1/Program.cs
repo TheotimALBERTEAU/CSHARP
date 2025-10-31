@@ -4,6 +4,7 @@ using ConsoleApp1;
 using ConsoleApp1.Data;
 using ConsoleApp1.Data.InterfaceRepository;
 using ConsoleApp1.Model;
+using ConsoleApp1.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +16,7 @@ using Npgsql;
 // Charger la configuration manuellement
 var configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\CSHARP\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(@"C:\Users\Théotim\RiderProjects\ConsoleApp1\ConsoleApp1\appsettings.json", optional: false, reloadOnChange: true)
     .Build();
 
 var host = Host.CreateDefaultBuilder(args)
@@ -38,7 +39,7 @@ IPersonRepository personRepository = scope.ServiceProvider.GetRequiredService<IP
 
 #region  CSV
 
-String path = configuration.GetRequiredSection("CSVFiles")["CoursSupDeVinci"];
+String path = configuration.GetRequiredSection("CSVFiles")["ConsoleApp1"];
 
 List<Profil> persons = new List<Profil>(); 
 
@@ -69,7 +70,8 @@ maClasse.Persons = persons.ToList();
 
 #endregion
 
-//dbConnectionService.SaveFullClasse(maClasse);
+DbConnection dbConnectionService = scope.ServiceProvider.GetRequiredService<DbConnection>();
+// dbConnectionService.SaveFullClasse(maClasse);
 List<Profil> personsDb = personRepository.GetAllEthan();
 
 foreach (var person in personsDb)
